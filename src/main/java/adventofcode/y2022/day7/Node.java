@@ -12,28 +12,26 @@ public class Node<T> {
         this.data = data;
     }
 
-    public Node(T data, Node<T> parent) {
-        this.data = data;
-        this.parent = parent;
-    }
-
     public List<Node<T>> getChildren() {
         return children;
     }
 
     public void setParent(Node<T> parent) {
-        parent.addChild(this);
         this.parent = parent;
+        parent.addChild(this);
+    }
+
+    public Node<T> getParent() {
+        return this.parent;
     }
 
     public void addChild(T data) {
         Node<T> child = new Node<>(data);
-        child.setParent(this);
+        //child.setParent(this);
         this.children.add(child);
     }
 
     public void addChild(Node<T> child) {
-        child.setParent(this);
         this.children.add(child);
     }
 
@@ -56,4 +54,5 @@ public class Node<T> {
     public void removeParent() {
         this.parent = null;
     }
+
 }
