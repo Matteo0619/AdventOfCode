@@ -1,8 +1,9 @@
 package adventofcode.y2021.day1;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class SecondExercise {
 
@@ -11,25 +12,27 @@ public class SecondExercise {
         FileReader reader = new FileReader(file);
         BufferedReader buffer = new BufferedReader(reader);
 
-        int counter = 1;
-        int total = 0;
-        int previus = 0;
-        int count = 0;
-
+        List<Integer> list = new ArrayList<>();
         String line = null;
-        
-        while ((line = buffer.readLine()) != null) {
-            total += Integer.parseInt(line);
-            if(counter%3 == 0 ) {
-                if(total > previus) {
-                    count++;
-                }
-                previus = total;
-                total = 0;
-            }
-            counter++;
+        int incremented = 0;
+        int lastSum = Integer.MAX_VALUE;
+        int b = 0;
+        int e = 3;
+
+        while((line = buffer.readLine()) != null) {
+            list.add(Integer.parseInt(line));
         }
 
-        System.out.println(count);
+        for(int i=0; i<list.size()-2; i++) {
+            int sum = list.subList(b, e).stream().mapToInt(Integer::intValue).sum();
+            if(sum > lastSum) {
+                incremented++;
+            }
+            lastSum = sum;
+            b++;
+            e++;
+        }
+
+        System.out.println(incremented);
     }
 }
