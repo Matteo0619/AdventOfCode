@@ -4,28 +4,19 @@ import java.math.BigInteger;
 
 public class BigItem {
 
-    private long firstValue;
+    private String value;
 
-    private long secondValue;
-
-    public BigItem(long value) {
-        this.firstValue = 0;
-        this.secondValue = value;
+    public BigItem(String value) {
+        this.value = value;
     }
 
-    public long getFirstValue() {
-        return firstValue;
+    public String getValue() {
+        return value;
     }
 
-    public void setFirstValue(long firstValue) {
-        this.firstValue = firstValue;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public long getSecondValue() {
-        return secondValue;
-    }
 
-    public void setSecondValue(long secondValue) {
-        this.secondValue = secondValue;
-    }
 }

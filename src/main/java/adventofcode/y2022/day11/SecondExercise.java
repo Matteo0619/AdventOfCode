@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class SecondExercise {
 
     public static void main(String[] args) throws IOException {
-        File file = new File("res/2022/day11/test.csv");
+        File file = new File("res/2022/day11/input.csv");
         FileReader reader = new FileReader(file);
         BufferedReader buffer = new BufferedReader(reader);
 
@@ -25,7 +25,7 @@ public class SecondExercise {
             String[] arr = items.split(", ");
             List<BigItem> list = new ArrayList<>();
             for(String s : arr) {
-                list.add(new BigItem(Long.parseLong(s)));
+                list.add(new BigItem(s));
             }
             String operation = buffer.readLine().replace("  Operation: new = ", "");
             String[] arr2 = operation.split(" ");
@@ -37,19 +37,20 @@ public class SecondExercise {
             monkeys.add(new BigMonkey(list, op, opType, divisible, testTrue, testFalse));
         }
 
-        for(int i=0; i<20; i++) {
+        for(int i=0; i<10000; i++) {
+            System.out.println(i);
             for(int c=0; c<monkeys.size(); c++) {
                 BigMonkey monkey = monkeys.get(c);
                 List<BigItem> items = monkey.getList();
                 List<BigItem> copy = List.copyOf(items);
                 if(items.size() != 0) {
-                    monkey.setInspected(monkey.getInspected()+items.size());
                     for(BigItem item : copy) {
+                        monkey.addInspected();
                         calculateNewValue(item, monkey);
                         int divisible = monkey.getDivisible();
                         int testTrue = monkey.getTestTrue();
                         int testFalse = monkey.getTestFalse();
-                        if(isDivisible(item, divisible)) {
+                        if(Utility.isDivisible(item.getValue(), divisible)) {
                             BigMonkey m = monkeys.get(testTrue);
                             m.getList().add(item);
                         } else {
@@ -70,73 +71,29 @@ public class SecondExercise {
     }
 
     public static void calculateNewValue(BigItem item, BigMonkey monkey) {
-        int v = 0;
+        String input = "0";
+
         try {
-            v = Integer.parseInt(monkey.getOperation());
+            input = monkey.getOperation();
         } catch (NumberFormatException e) {
+            input = item.getValue();
         }
+
         String opType = monkey.getOpType();
-
-        long first = item.getFirstValue();
-        long second = item.getSecondValue();
-
-        System.out.println("F: " + first + " S: " + second);
+        String value = item.getValue();
 
         switch (opType) {
             case "+" : {
-                if(v == 0) {
-                    if(second + second < 0) {
-                        long toAdd = Math.abs(second + second);
-                        second = Long.MAX_VALUE;
-                        first += toAdd;
-                    } else {
-                        second += second;
-                    }
-                } else {
-                    if(second + v < 0) {
-                        long toAdd = Math.abs(second + v);
-                        second = Long.MAX_VALUE;
-                        first += toAdd;
-                    } else {
-                        second += v;
-                    }
-                }
+                value = Utility.sum(input, value);
+                break;
             }
             case "*" : {
-                if(v == 0) {
-                    if(second * second < 0) {
-                        long toAdd = Math.abs(second * second);
-                        second = Long.MAX_VALUE;
-                        first *= toAdd;
-                    } else {
-                        second *= second;
-                    }
-                } else {
-                    if(first * v < 0) {
-                        long toAdd = Math.abs(second * v);
-                        second = Long.MAX_VALUE;
-                        first *= toAdd;
-                    } else {
-                        second *= v;
-                    }
-                }
+                value = Utility.multiply(input, value);
+                break;
             }
         }
 
-        item.setFirstValue(first);
-        item.setSecondValue(second);
+        item.setValue(value);
     }
 
-    public static boolean isDivisible(BigItem item, int divisible) {
-        long first = item.getFirstValue();
-        long second = item.getSecondValue();
-
-        if(first == 0) {
-            return second % divisible == 0;
-        } else {
-            long remain = first % divisible;
-            BigInteger big = BigInteger.valueOf(second).add(BigInteger.valueOf(remain));
-            return big.remainder(BigInteger.valueOf(divisible)).equals(BigInteger.ZERO);
-        }
-    }
 }

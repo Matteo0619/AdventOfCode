@@ -83,4 +83,8 @@ public class BigMonkey {
     public void setInspected(int inspected) {
         this.inspected = inspected;
     }
+
+    public void addInspected() {
+        this.inspected += 1;
+    }
 }
