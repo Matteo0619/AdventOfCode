@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.stream.Collectors;
 public class SecondExercise {
 
     public static void main(String[] args) throws IOException {
-        File file = new File("res/2022/day11/input.csv");
+        File file = new File("res/2022/day11/test.csv");
         FileReader reader = new FileReader(file);
         BufferedReader buffer = new BufferedReader(reader);
 
@@ -37,7 +36,7 @@ public class SecondExercise {
             monkeys.add(new BigMonkey(list, op, opType, divisible, testTrue, testFalse));
         }
 
-        for(int i=0; i<10000; i++) {
+        for(int i=0; i<1000; i++) {
             System.out.println(i);
             for(int c=0; c<monkeys.size(); c++) {
                 BigMonkey monkey = monkeys.get(c);
@@ -73,10 +72,10 @@ public class SecondExercise {
     public static void calculateNewValue(BigItem item, BigMonkey monkey) {
         String input = "0";
 
-        try {
-            input = monkey.getOperation();
-        } catch (NumberFormatException e) {
+        if(monkey.getOperation().equalsIgnoreCase("old")) {
             input = item.getValue();
+        } else {
+            input = monkey.getOperation();
         }
 
         String opType = monkey.getOpType();
