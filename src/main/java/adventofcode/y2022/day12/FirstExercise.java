@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class FirstExercise {
     static boolean[][] visited;
@@ -46,17 +47,13 @@ public class FirstExercise {
                 .map(l -> l.toArray(Position[]::new))
                 .toArray(Position[][]::new);
 
-        //System.out.println(mat[20][0]);
-
-        //System.out.println(list.get(20).stream().map(Position::getValue).collect(Collectors.toList()));
-        //System.out.println(Arrays.deepToString(mat));
 
         int dist = findShortestPathLength(mat, src, dest);
         if (dist != -1)
-            System.out.print("Shortest Path is " + dist);
+            System.out.println("Shortest Path is " + dist);
 
         else
-            System.out.print("Shortest Path doesn't exist");
+            System.out.println("Shortest Path doesn't exist");
 
     }
 
@@ -83,39 +80,32 @@ public class FirstExercise {
     static int findShortestPath(Position[][] mat, int srcR, int srcC, int destR, int destC, int min_dist, int dist) {
 
         if (srcR == destR && srcC == destC) {
-            System.out.println("DEST TROVATA");
+            System.out.println("DEST TROVATA " + dist);
             min_dist = Math.min(dist, min_dist);
             return min_dist;
         }
 
         // set (i, j) cell as visited
         visited[srcR][srcC] = true;
-        // go to the right cell
-        if (isSafe(mat, srcR, srcC + 1, mat[srcR][srcC].getValue())) {
-            System.out.println("RIGHT " + mat[srcR][srcC].getValue() + " TO " + mat[srcR][srcC+1].getValue());
-            min_dist = findShortestPath(mat, srcR, srcC + 1, destR, destC,
-                    min_dist, dist + 1);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        // go to the top cell
-        if (isSafe(mat, srcR - 1, srcC, mat[srcR][srcC].getValue())) {
-            System.out.println("TOP " + mat[srcR][srcC].getValue() + " TO " + mat[srcR-1][srcC].getValue());
-            min_dist = findShortestPath(mat, srcR - 1, srcC, destR, destC,
-                    min_dist, dist + 1);
-        }
-        // go to the bottom cell
-        if (isSafe(mat, srcR + 1, srcC, mat[srcR][srcC].getValue())) {
-            System.out.println("DOWN " + mat[srcR][srcC].getValue() + " TO " + mat[srcR+1][srcC].getValue());
-            min_dist = findShortestPath(mat, srcR + 1, srcC, destR, destC,
-                    min_dist, dist + 1);
-        }
-        // go to the left cell
-        if (isSafe(mat, srcR, srcC - 1, mat[srcR][srcC].getValue())) {
-            System.out.println("LEFT " + mat[srcR][srcC].getValue() + " TO " + mat[srcR][srcC-1].getValue());
-            min_dist = findShortestPath(mat, srcR, srcC - 1, destR, destC,
-                    min_dist, dist + 1);
-        }
-        // remove (i, j) from the visited matrix
-        visited[srcR][srcC] = false;
+        CountDownLatch latch = new CountDownLatch(1);
+
+        AsyncWorker workerT = new AsyncWorker("TOP", latch, mat, srcR, srcC, destR, destC, min_dist, dist);
+        AsyncWorker workerR = new AsyncWorker("RIGHT", latch, mat, srcR, srcC, destR, destC, min_dist, dist);
+        AsyncWorker workerD = new AsyncWorker("DOWN", latch, mat, srcR, srcC, destR, destC, min_dist, dist);
+        AsyncWorker workerL = new AsyncWorker("LEFT", latch, mat, srcR, srcC, destR, destC, min_dist, dist);
+
+        workerL.start();
+        workerT.start();
+        workerR.start();
+        workerD.start();
+
+        latch.countDown();
+
         return min_dist;
 
     }
@@ -136,18 +126,15 @@ public class FirstExercise {
         String dest = mat[x][y].getValue();
         if(src.equals("S")) {
             src = "a";
-            System.out.println("START");
         }
 
         if(dest.equals("E")) {
             dest = "z";
-        } else if(dest.equals("S")) {
-            dest = "a";
         }
 
         int d = (int)dest.charAt(0);
         int s = (int)src.charAt(0);
 
-        return d <= s + 1;
+        return  d <= s + 1 ;
     }
 }
