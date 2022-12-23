@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class FirstExercise {
 
@@ -16,7 +19,7 @@ public class FirstExercise {
         FileReader reader = new FileReader(file);
         BufferedReader buffer = new BufferedReader(reader);
 
-        List<Node> list = new ArrayList<>();
+        Set<Node<Valve>> list = new HashSet<>();
         String line = null;
         int min = 30;
         int maxpressure = 0;
@@ -25,16 +28,22 @@ public class FirstExercise {
             String[] arr = line.split(" ");
             String name = arr[1];
             int rate = Integer.parseInt(arr[4].replace("rate=", "").replace(";", ""));
+
             Valve valve = new Valve(name, rate);
-            Node<Valve> node = new Node<>(valve);
+
+            Node<Valve> node = list.stream().filter(x ->
+                x.getData().getName().equals(name)).findAny().orElse(new Node<>(valve));
+            node.getData().setRate(rate);
+            list.add(node);
 
             for (int i = 9; i < arr.length; i++) {
                 String s = arr[i].replace(",", "");
                 Valve v = new Valve(s);
-                Node<Valve> n = new Node<>(v);
+                Node<Valve> n = list.stream().filter(x ->
+                        x.getData().getName().equals(s)).findAny().orElse(new Node<>(v));
                 node.addChild(n);
+                list.add(n);
             }
-            list.add(node);
         }
 
         int temp = 0;
@@ -49,11 +58,11 @@ public class FirstExercise {
             //apro la valbola se rate != 0
             if(prod != 0) {
                 opened.add(node.getData());
-                rate1 = calculateRate(node, 28, prod, prod, opened);
+                rate1 = calculateRate(node, 27, prod, prod, opened);
             }
 
             //lascio la valvola chiusa
-            int rate2 = calculateRate(node, 29, prod, prod, opened);
+            int rate2 = calculateRate(node, 28, prod, prod, opened);
 
             maxpressure = Math.max(maxpressure, Math.max(rate1, rate2));
         }
@@ -64,6 +73,7 @@ public class FirstExercise {
     }
 
     public static int calculateRate(Node<Valve> node, int min, int prod, int pressure, List<Valve> opened) {
+
         if(min <= 0) {
             return pressure;
         }
@@ -72,17 +82,20 @@ public class FirstExercise {
 
         for(Node<Valve> n : node.getChildren()) {
             int rate1 = 0;
+            int rate2;
             int p = n.getData().getRate();
+            int pr = prod;
 
             //apro la valbola se rate != 0
-            if(p != 0 && opened.contains(node.getData())) {
+            if(p != 0 && !opened.contains(node.getData())) {
                 opened.add(node.getData());
                 prod += p;
-                rate1 = calculateRate(n, min-2, prod, pressure+prod, opened);
+                rate1 = calculateRate(n, min-2, prod, pressure+prod+pr, opened);
             }
 
             //lascio la valvola chiusa
-            int rate2 = calculateRate(n, min-1, prod, pressure+prod, opened);
+            rate2 = calculateRate(n, min-1, prod, pressure+prod, opened);
+
 
             temp = Math.max(temp, Math.max(rate1, rate2));
 
@@ -91,10 +104,6 @@ public class FirstExercise {
         return temp;
     }
 
-//    Thread threadClose = new Thread(() -> {
-//
-//    });
-//                threadClose.start();
 
 }
 
