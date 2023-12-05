@@ -10,28 +10,9 @@ import java.util.List;
 public class Test {
 
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
+        String s = "467..114..";
 
-        System.out.println("18736832456238468273462378467234682837487263846284238761873683245623846827346237846723468283748726384628423876".length());
-
-        for(int i=0; i<1000; i++) {
-            Utility.sum("18736832456238468273462378467234682837487263846284238761873683245623846827346237846723468283748726384628423876", "18736832456238468273462378467234682837487263846284238761873683245623846827346237846723468283748726384628423876");
-        }
-
-        System.out.println(System.currentTimeMillis() - start);
-
-        char[] arr = "18736832456238468273462378467234682837487263846284238761873683245623846827346237846723468283748726384628423876".toCharArray();
-
-        start = System.currentTimeMillis();
-
-        for(int i=0; i<1000; i++) {
-            Utility.sum(arr, arr);
-        }
-        System.out.println(System.currentTimeMillis() - start);
-
-        List<String> list = new ArrayList<>();
-        list.set(50, "abcd");
-        System.out.println(list);
+        System.out.println(s.indexOf("467"));
 
     }
 

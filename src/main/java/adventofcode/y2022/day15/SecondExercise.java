@@ -1,7 +1,5 @@
 package adventofcode.y2022.day15;
 
-import adventofcode.y2022.day12.AsyncThread2;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
