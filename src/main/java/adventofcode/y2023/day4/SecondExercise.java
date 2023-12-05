@@ -41,7 +41,7 @@ public class SecondExercise {
 
             for(int i=counter+1; i<=counter+occurrence; i++) {
                 if(!map.containsKey(i)) {
-                    map.put(i, 1);
+                    map.put(i, map.get(counter));
                 } else {
                     map.put(i, map.get(i)+map.get(counter));
                 }
@@ -56,7 +56,5 @@ public class SecondExercise {
                 .sum();
 
         System.out.println(sum);
-
-        //8823329 too low
     }
 }
