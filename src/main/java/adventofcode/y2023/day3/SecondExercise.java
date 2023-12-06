@@ -33,6 +33,7 @@ public class SecondExercise {
         int total = 0;
         String number = "";
         boolean valid = false;
+        Gear g1 = null;
 
         List<Gear> gears = new ArrayList<>();
 
@@ -45,24 +46,26 @@ public class SecondExercise {
         }
 
         for(int r=0;r<row; r++) {
-            for(int c=0;c<col; c++) {
+            for(int c=0;c<col;c++) {
 
                 if(isNumeric(mat[r][c])) {
                     number = number.concat(mat[r][c]);
                     if(checkSurrounding(mat, r, c)) {
+                        g1 = getConnectedGear(mat, r, c);
                         valid = true;
                     }
                 } else {
                     if(valid) {
-                        System.out.println("NUMBER " + number +  " IS VALID");
 
-                        Gear g1 = getConnectedGear(mat, r, c-1);
+                        //Gear g1 = getConnectedGear(mat, r, c-1);
 
-                        if(g1 == null) {
-                            continue;
+                        Gear g2 = null;
+
+                        for(Gear g : gears) {
+                            if(g.getRow() == g1.getRow() && g.getColumn() == g1.getColumn()) {
+                                g2 = g;
+                            }
                         }
-
-                        Gear g2 = gears.stream().filter(g -> g.getRow() == g1.getRow() && g.getColumn() == g1.getColumn()).findFirst().get();
 
                         if(g2.getPart1() == 0) {
                             g2.setPart1(Integer.parseInt(number));
@@ -73,6 +76,7 @@ public class SecondExercise {
                         }
                     }
 
+                    g1 = null;
                     number = "";
                     valid = false;
 
@@ -122,7 +126,6 @@ public class SecondExercise {
                 for(int dy = -1; dy <= 1; dy++) {
                     if ((y + dy >= 0) && (y + dy < list[x + dx].length) && (!(dx == 0 && dy == 0))) {
                         if (list[x + dx][y + dy].equals("*")) {
-                            System.out.println("FOUND GEAR AT " + (x + dx) +  " " +  (y + dy) + " FOR " + x + " " + y);
                             return new Gear(x + dx, y + dy);
                         }
                     }
