@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class FirstExercise {
+public class SecondExercise {
 
     public static void main(String[] args) throws IOException {
         File file = new File("res/2023/day5/input.csv");
@@ -33,10 +34,12 @@ public class FirstExercise {
             }
 
             if(line.contains("seeds")) {
-                Pattern pattern = Pattern.compile("\\d+");
-                Matcher matcher = pattern.matcher(line);
+                String[] arr = line.split(": ");
+                String[] s = arr[1].split(" ");
 
-                matcher.results().forEach(m -> seeds.add(new Seed(Long.parseLong(m.group()))));
+                for(int i=0; i<s.length; i+=2) {
+                    seeds.add(new Seed(Long.parseLong(s[i]), Long.parseLong(s[i+1])));
+                }
                 continue;
             }
 
@@ -58,32 +61,48 @@ public class FirstExercise {
         }
         stages.add(steps);
 
-        //ciclo su tutti i semi
+        //scorro la lista dei semi
         for(Seed seed : seeds) {
 
-            //per ogni seme prendo la lista di stages
-            for(List<Step> l : stages) {
+            //prendo il range del seme
+            long range = seed.getRange();
 
-                //per ogni stage prendo la lista di step
-                for(Step step : l) {
-                    long location = seed.getLocation();
-                    long source = step.getSource();
-                    long range = step.getRange();
-                    long dest = step.getDestination();
+            //scorro tutti i valori del seme
+            for(int i=0; i<range; i++) {
 
-                    if(source <= location && location <= source+range-1) {
-                        long diff = location - source;
-                        seed.setLocation(dest+diff);
-                        break;
+                seed.setNewLocation(seed.getLocation());
+
+                for(List<Step> l : stages) {
+
+                    //per ogni stage prendo la lista di step
+                    for(Step step : l) {
+                        long location = seed.getNewLocation()+i;
+                        long source = step.getSource();
+                        long srange = step.getRange();
+                        long dest = step.getDestination();
+
+                        if(source <= location && location <= source+srange-1) {
+                            long diff = location - source;
+                            seed.setNewLocation(dest+diff);
+                            break;
+                        }
                     }
+
                 }
 
+                if(seed.getNewLocation() < seed.getLowestLocation() ) {
+                    seed.setLowestLocation(seed.getNewLocation());
+                    seed.setLowRange(i);
+                }
             }
+
         }
 
-        long lowestLocation = seeds.stream().mapToLong(Seed::getLocation).min().getAsLong();
+        Long lowest = seeds.stream().mapToLong(Seed::getLowestLocation).min().getAsLong();
 
-        System.out.println(lowestLocation);
+        Seed lowSeed = seeds.stream().filter(s -> s.getLowestLocation() == lowest).findFirst().get();
+
+        System.out.println(lowSeed.getLocation() +  " " + (lowSeed.getLocation() + lowSeed.getLowRange()));
     }
 
 }
