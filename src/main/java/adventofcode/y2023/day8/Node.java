@@ -2,21 +2,12 @@ package adventofcode.y2023.day8;
 
 public class Node {
 
-    private String start;
-
     private String current;
+    private long counter;
 
     public Node(String start, String current) {
-        this.start = start;
+        this.counter = 0;
         this.current = current;
-    }
-
-    public String getStart() {
-        return start;
-    }
-
-    public void setStart(String start) {
-        this.start = start;
     }
 
     public String getCurrent() {
@@ -25,5 +16,13 @@ public class Node {
 
     public void setCurrent(String current) {
         this.current = current;
+    }
+
+    public long getCounter() {
+        return counter;
+    }
+
+    public void setCounter(long counter) {
+        this.counter = counter;
     }
 }

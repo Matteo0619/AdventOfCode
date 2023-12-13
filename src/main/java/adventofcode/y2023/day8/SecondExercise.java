@@ -1,9 +1,11 @@
 package adventofcode.y2023.day8;
 
+import javax.security.auth.callback.TextOutputCallback;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +21,8 @@ public class SecondExercise {
 
         boolean found = false;
         boolean end;
-        int counter = 0;
+        long counter = 0;
+        BigInteger total = BigInteger.ONE;
 
 
         String line = null;
@@ -41,29 +44,48 @@ public class SecondExercise {
 
         }
 
-
-        while (!found) {
-            for (String instruction : instructions) {
-                counter++;
-                for (Node node : startingNodes) {
+        for(Node node : startingNodes) {
+            while(!found) {
+                for(String instruction : instructions) {
                     String current = node.getCurrent();
+                    counter++;
                     if (instruction.equals("L")) {
                         current = map.get(current).getLeft();
                     } else {
                         current = map.get(current).getRight();
                     }
                     node.setCurrent(current);
-                }
-                end = startingNodes.stream().allMatch(n -> n.getCurrent().endsWith("Z"));
-                if(end) {
-                    found = true;
-                    break;
+                    if(current.endsWith("Z")) {
+                        node.setCounter(counter);
+                        found=true;
+                        break;
+                    }
                 }
             }
+            counter = 0;
+            found = false;
         }
 
-        System.out.println(counter);
+        for(int i=0; i<startingNodes.size(); i++) {
+            total = calcolaLCM(total, BigInteger.valueOf(startingNodes.get(i).getCounter()));
+        }
 
+        System.out.println(total);
+
+
+    }
+
+    private static BigInteger calcolaLCM(BigInteger a, BigInteger b) {
+        if (a.equals(BigInteger.ZERO) || b.equals(BigInteger.ZERO)) {
+            return BigInteger.ZERO;
+        }
+
+        BigInteger gcd = calcolaMCD(a, b);
+        return a.multiply(b).abs().divide(gcd);
+    }
+
+    private static BigInteger calcolaMCD(BigInteger a, BigInteger b) {
+        return a.gcd(b).abs();
     }
 
 }
