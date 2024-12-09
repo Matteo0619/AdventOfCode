@@ -1,8 +1,5 @@
 package adventofcode.y2023.day13;
 
-import org.apache.commons.math.linear.BigMatrix;
-import org.apache.commons.math.linear.FieldMatrix;
-import org.apache.commons.math.linear.MatrixUtils;
 
 import java.io.*;
 import java.util.ArrayList;
