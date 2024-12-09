@@ -5,6 +5,25 @@ import java.util.*;
 
 public class FirstExercise {
 
+    public static void main(String[] args) throws IOException {
+        File file = new File("res/2024/day2/input.csv");
+        FileReader reader = new FileReader(file);
+        BufferedReader buffer = new BufferedReader(reader);
+
+        String line = null;
+
+        List<List<String>> list = new ArrayList<>();
+
+        while ((line = buffer.readLine()) != null) {
+
+            String[] arr = line.split(" ");
+            List<String> l = new ArrayList<>(List.of(arr));
+            list.add(l);
+        }
+
+        System.out.println(countSafe(list));
+    }
+
     public static boolean isSafe(List<String> list) {
 
         boolean crescente = Integer.parseInt(list.get(1)) > Integer.parseInt(list.get(0));
@@ -37,25 +56,5 @@ public class FirstExercise {
         return safeCount;
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = new File("res/2024/day2/input.csv");
-        FileReader reader = new FileReader(file);
-        BufferedReader buffer = new BufferedReader(reader);
-
-        String line = null;
-
-        List<List<String>> list = new ArrayList<>();
-
-        while ((line = buffer.readLine()) != null) {
-
-            String[] arr = line.split(" ");
-            List<String> l = new ArrayList<>(List.of(arr));
-            list.add(l);
-        }
-
-
-        // Count safe reports
-        System.out.println("Number of safe reports: " + countSafe(list));
-    }
 
 }
