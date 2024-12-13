@@ -12,43 +12,34 @@ import java.util.Map;
 public class SecondExercise {
 
     public static void main(String[] args) throws IOException {
-        File file = new File("res/2024/day11/input.csv");
+        File file = new File("res/2024/day13/input.csv");
         FileReader reader = new FileReader(file);
         BufferedReader buffer = new BufferedReader(reader);
 
         String line = null;
-        Map<String, Long> map = new HashMap<>();
+        Long total = 0L;
 
-        while ((line = buffer.readLine()) != null ) {
-            String[] arr = line.split(" ");
-            for(String s : arr) {
-                map.put(s, map.getOrDefault(s, 0L)+1);
-            }
-        }
+        while ((line = buffer.readLine()) != null) {
+            Long a1 = Long.parseLong(line.replace("Button A: X+", "").split(",")[0]);
+            Long a2 = Long.parseLong(line.split(", Y+")[1]);
+            line = buffer.readLine();
+            Long b1 = Long.parseLong(line.replace("Button B: X+", "").split(",")[0]);
+            Long b2 = Long.parseLong(line.split(", Y+")[1]);
+            line = buffer.readLine();
+            Long tot1 = Long.parseLong(line.replace("Prize: X=", "").split(",")[0])+10000000000000L;
+            Long tot2 = Long.parseLong(line.split(", Y=")[1])+10000000000000L;
+            line = buffer.readLine();
+            Long delta = (a1 * b2) - (a2 * b1);
+            Long deltaA = (tot1 * b2) - (tot2 * b1);
+            Long deltaB = (a1 * tot2) - (a2 * tot1);
+            Long a = deltaA / delta;
+            Long b = deltaB / delta;
 
-        for(int i=0; i<75; i++) {
-            Map<String, Long> newMap = new HashMap<>();
-            for(String s : map.keySet()) {
-                if(s.equals("0")) {
-                    newMap.put("1", newMap.getOrDefault("1", 0L)+map.get(s));
-                } else if(s.length() %2 == 0) {
-                    int length = s.length();
-                    String s1 = StringUtils.stripStart(s.substring(0, length/2), "0").isEmpty() ? "0" : StringUtils.stripStart(s.substring(0, length/2), "0");
-                    String s2 = StringUtils.stripStart(s.substring(length/2), "0").isEmpty() ? "0" : StringUtils.stripStart(s.substring(length/2), "0");
-                    newMap.put(s1, newMap.getOrDefault(s1, 0L)+map.get(s));
-                    newMap.put(s2, newMap.getOrDefault(s2, 0L)+map.get(s));
-                } else {
-                    Long n = Long.parseLong(s) * 2024;
-                    newMap.put("" + n, newMap.getOrDefault("" + n, 0L) + map.get(s));
-                }
+            if(a1 * a + b1 * b == tot1 && a2*a + b2*b == tot2) {
+                total += a*3 + b;
             }
 
-            map = newMap;
-
         }
-
-
-        System.out.print(map.values().stream().mapToLong(Long::longValue).sum());
 
     }
 }

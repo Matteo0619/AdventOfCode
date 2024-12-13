@@ -27,8 +27,8 @@ public class FirstExercise {
             Long b1 = Long.parseLong(line.replace("Button B: X+", "").split(",")[0]);
             Long b2 = Long.parseLong(line.split(", Y+")[1]);
             line = buffer.readLine();
-            Long tot1 = Long.parseLong(line.replace("Prize: X=", "").split(",")[0])+10000000000000L;
-            Long tot2 = Long.parseLong(line.split(", Y=")[1])+10000000000000L;
+            Long tot1 = Long.parseLong(line.replace("Prize: X=", "").split(",")[0]);
+            Long tot2 = Long.parseLong(line.split(", Y=")[1]);
             line = buffer.readLine();
             Long delta = (a1 * b2) - (a2 * b1);
             Long deltaA = (tot1 * b2) - (tot2 * b1);
